@@ -36,9 +36,21 @@ import matplotlib
 matplotlib.use('Agg') # necessary in the cloud
 import matplotlib.pyplot as plt
 
-class main():
+'''
+def work(job,new_coeffs_array):
+    job.find_bic_of_1_subarray(new_coeffs_array)
+'''
 
-    def expanded_layden_all_coeffs(coeff_array,H,F):
+class job:
+
+
+    def __init__(self):
+
+        #coeff_array = self.coeff_array
+        print("Running job.")
+
+
+    def expanded_layden_all_coeffs(self,coeff_array,H,F):
 
         # definition of coefficients as of 2020 Mar 9:
         # K = a + bH + cF + dHF + f(H^{2}) + g(F^{2}) + hF(H^{2}) + kH(F^{2}) + m(H^{3}) + n(F^{3})
@@ -54,15 +66,15 @@ class main():
         m_coeff = coeff_array[8]
         n_coeff = coeff_array[9]
 
-        K_calc = a_coeff + b_coeff*H + c_coeff*F + d_coeff*H*F +         f_coeff*np.power(H,2.) + g_coeff*np.power(F,2.) +         h_coeff*F*np.power(H,2.) + k_coeff*H*np.power(F,2.) +         m_coeff*np.power(H,3.) + n_coeff*np.power(F,3.)
+        K_calc = a_coeff + b_coeff*H + c_coeff*F + d_coeff*H*F + \
+            f_coeff*np.power(H,2.) + g_coeff*np.power(F,2.) + \
+            h_coeff*F*np.power(H,2.) + k_coeff*H*np.power(F,2.) + \
+            m_coeff*np.power(H,3.) + n_coeff*np.power(F,3.)
 
         return K_calc
 
 
-    # In[9]:
-
-
-    def original_layden_abcd(coeff_array,H,F):
+    def original_layden_abcd(self,coeff_array,H,F):
 
         # definition of coefficients as of 2020 Mar 9:
         # K = a + bH + cF + dHF + f(H^{2}) + g(F^{2}) + hF(H^{2}) + kH(F^{2}) + m(H^{3}) + n(F^{3})
@@ -77,10 +89,7 @@ class main():
         return K_calc
 
 
-    # In[10]:
-
-
-    def find_bic_of_1_subarray(new_coeffs_array):
+    def find_bic_of_1_subarray(self,new_coeffs_array):
 
         for t in range(0,len(new_coeffs_array)):
 
@@ -136,7 +145,7 @@ class main():
             print(bounds_array)
 
             # the error function
-            errfunc_coeffs = lambda p, H, F, K, err_K: (K - expanded_layden_all_coeffs(p, H, F)) / err_K
+            errfunc_coeffs = lambda p, H, F, K, err_K: (K - self.expanded_layden_all_coeffs(p, H, F)) / err_K
 
             # the least-squares fit
             out = optimize.least_squares(errfunc_coeffs, pinit, bounds=bounds_array,
@@ -152,7 +161,7 @@ class main():
             # calculate BIC
             # N.b. astropy BIC assumes Gaussian distribution
             # retrieved K values, using best-fit params
-            retrieved_K = expanded_layden_all_coeffs(pfinal, df_choice["EW_Balmer"], df_choice["feh"])
+            retrieved_K = self.expanded_layden_all_coeffs(pfinal, df_choice["EW_Balmer"], df_choice["feh"])
             # 'sum of squared residuals between model and data'
             ssr = np.sum(np.power(np.subtract(df_choice["EW_CaIIK"],retrieved_K),2.))
             # number of parameters that were actually varying
@@ -200,14 +209,14 @@ class main():
 
             # make some isometallicity lines for the plot
             isometal_balmer_abcissa = np.arange(2,12,0.2)
-            retrieved_K_isometal_neg3pt0 = expanded_layden_all_coeffs(pfinal, isometal_balmer_abcissa, -3.0)
-            retrieved_K_isometal_neg2pt5 = expanded_layden_all_coeffs(pfinal, isometal_balmer_abcissa, -2.5)
-            retrieved_K_isometal_neg2pt0 = expanded_layden_all_coeffs(pfinal, isometal_balmer_abcissa, -2.)
-            retrieved_K_isometal_neg1pt5 = expanded_layden_all_coeffs(pfinal, isometal_balmer_abcissa, -1.5)
-            retrieved_K_isometal_neg1pt0 = expanded_layden_all_coeffs(pfinal, isometal_balmer_abcissa, -1.)
-            retrieved_K_isometal_neg0pt5 = expanded_layden_all_coeffs(pfinal, isometal_balmer_abcissa, -0.5)
-            retrieved_K_isometal_pos0pt0 = expanded_layden_all_coeffs(pfinal, isometal_balmer_abcissa, 0.0)
-            retrieved_K_isometal_pos0pt2 = expanded_layden_all_coeffs(pfinal, isometal_balmer_abcissa, 0.2)
+            retrieved_K_isometal_neg3pt0 = self.expanded_layden_all_coeffs(pfinal, isometal_balmer_abcissa, -3.0)
+            retrieved_K_isometal_neg2pt5 = self.expanded_layden_all_coeffs(pfinal, isometal_balmer_abcissa, -2.5)
+            retrieved_K_isometal_neg2pt0 = self.expanded_layden_all_coeffs(pfinal, isometal_balmer_abcissa, -2.)
+            retrieved_K_isometal_neg1pt5 = self.expanded_layden_all_coeffs(pfinal, isometal_balmer_abcissa, -1.5)
+            retrieved_K_isometal_neg1pt0 = self.expanded_layden_all_coeffs(pfinal, isometal_balmer_abcissa, -1.)
+            retrieved_K_isometal_neg0pt5 = self.expanded_layden_all_coeffs(pfinal, isometal_balmer_abcissa, -0.5)
+            retrieved_K_isometal_pos0pt0 = self.expanded_layden_all_coeffs(pfinal, isometal_balmer_abcissa, 0.0)
+            retrieved_K_isometal_pos0pt2 = self.expanded_layden_all_coeffs(pfinal, isometal_balmer_abcissa, 0.2)
 
             # plot it
             plt.clf()
@@ -261,11 +270,7 @@ if __name__ == "__main__":
     # set name of csv written-out data to which we will append BIC info
     csv_file_name = "junk.csv"
 
-    # In[4]:
-
-
     # figure out all subsets of coefficients beyond [a,b,c,d]
-
     coeffs_strings = ["f","g","h","k","m","n"]
     coeffs_strings_nan = ["NaN1"]
     new_coeffs_6 = list(itertools.combinations(coeffs_strings, 6))
@@ -276,20 +281,23 @@ if __name__ == "__main__":
     new_coeffs_1 = list(itertools.combinations(coeffs_strings, 1))
     baseline = list(itertools.combinations(coeffs_strings_nan, 1)) # original Layden [a,b,c,d] coefficients only
 
-    # In[7]:
-
-
     # create the array of arrays, so we can map them across cores
     new_coeffs_mother_array = [baseline,new_coeffs_1,new_coeffs_2,new_coeffs_3,new_coeffs_4,new_coeffs_5,new_coeffs_6]
 
-    import ipdb; ipdb.set_trace()
+
     # map the function across all available cores
-    '''
+
     ncpu = multiprocessing.cpu_count()
     pool = multiprocessing.Pool(ncpu)
-    pool.map(main.find_bic_of_1_subarray, new_coeffs_mother_array)
-    pool.close()
-    '''
+
+    test_instance = job()
+    #pool.map(test_instance.find_bic_of_1_subarray, new_coeffs_mother_array)
+    #pool.map(test_instance.find_bic_of_1_subarray, new_coeffs_mother_array)
+
+    # I gummed up the multiprocessing, so here it is in serial:
+    for t in range(0,len(new_coeffs_mother_array)):
+        test_instance.find_bic_of_1_subarray(new_coeffs_mother_array[t])
+    #pool.close()
 
 
 
