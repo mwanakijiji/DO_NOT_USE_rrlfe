@@ -26,8 +26,8 @@ matplotlib.use('Agg') # necessary in the cloud
 import matplotlib.pyplot as plt
 
 # set the coefficients of the model
-coeff_array= np.array([2.44651703e+01,-2.61158619e+00 ,1.23783649e+01, -1.09623588e+00,
-                    8.67772095e-02,1.55202172e+00,2.90194894e-02,-8.25723508e-02,0,0])
+coeff_array= np.array([25.62681273081429,-2.7529892780145238,12.51076634183292,-1.128153778868404,
+                    0.08955467256229102,1.4456813531059578,0.02987747113827764,-0.07646288477131769,0,0])
 #coeff_array = np.array([1.,1.,1.,1.,1.,1.,1.,1.,0,0])
 
 # read in the data points to be overplotted
@@ -62,7 +62,7 @@ def expanded_layden_all_coeffs(coeff_array,H,F):
 
 
 # make some isometallicity lines for the plot
-isometal_balmer_abcissa = np.arange(2,14,0.2)
+isometal_balmer_abcissa = np.arange(2,16,0.2)
 retrieved_K_isometal_neg3pt0 = expanded_layden_all_coeffs(coeff_array=coeff_array, H=isometal_balmer_abcissa, F=-3.0)
 retrieved_K_isometal_neg2pt5 = expanded_layden_all_coeffs(coeff_array=coeff_array, H=isometal_balmer_abcissa, F=-2.5)
 retrieved_K_isometal_neg2pt0 = expanded_layden_all_coeffs(coeff_array=coeff_array, H=isometal_balmer_abcissa, F=-2.)
@@ -89,8 +89,52 @@ g = sns.relplot(
     palette=cmap, sizes=(30,160)
 )
 
-feh_nonred = np.array([-3.0,-2.5,-2.0,-1.5,-1.0,-0.5,0.0,0.2])
+# plot points to show median error bars
+# define the line along which they will lie
+balmer_dummy = np.arange(7,16,1)
+contour_4_points = np.add(8.,expanded_layden_all_coeffs(coeff_array=coeff_array, H=balmer_dummy, F=0.2))
+bool_p02 = (df_choice["feh"] == 0.2)
+#import ipdb; ipdb.set_trace()
+plt.errorbar(balmer_dummy[0],[20],
+                xerr=np.median(df_choice["err_EW_Balmer_based_Robo"][bool_p02]),
+                yerr=np.median(df_choice["err_EW_CaIIK_from_robo"][bool_p02]), ecolor="k") # [Fe/H] = +0.2
+plt.text(balmer_dummy[0]+0.1,20+0.5,"[Fe/H] = +0.2")
+'''
+bool_p00 = (df_choice["feh"] == 0.0)
+plt.errorbar(balmer_dummy[1],contour_4_points[1],
+                xerr=np.median(df_choice["err_EW_Balmer_based_Robo"][bool_p00]),
+                yerr=np.median(df_choice["err_EW_CaIIK_from_robo"][bool_p00]), ecolor="k")  # [Fe/H] = +0.0
 
+bool_m05 = (df_choice["feh"] == -0.5)
+plt.errorbar(balmer_dummy[2],contour_4_points[2],
+                xerr=np.median(df_choice["err_EW_Balmer_based_Robo"][bool_m05]),
+                yerr=np.median(df_choice["err_EW_CaIIK_from_robo"][bool_m05]), ecolor="k") # [Fe/H] = -0.5
+'''
+bool_m10 = (df_choice["feh"] == -1.0)
+plt.errorbar(balmer_dummy[3],[15],
+                xerr=np.median(df_choice["err_EW_Balmer_based_Robo"][bool_m10]),
+                yerr=np.median(df_choice["err_EW_CaIIK_from_robo"][bool_m10]), ecolor="k") # [Fe/H] = -1.0
+plt.text(balmer_dummy[3]+0.1,15+0.5,"-1.0")
+'''
+bool_m15 = (df_choice["feh"] == -1.5)
+plt.errorbar(balmer_dummy[4],contour_4_points[4],
+                xerr=np.median(df_choice["err_EW_Balmer_based_Robo"][bool_m15]),
+                yerr=np.median(df_choice["err_EW_CaIIK_from_robo"][bool_m15]), ecolor="k")  # [Fe/H] = -1.5
+
+bool_m20 = (df_choice["feh"] == -2.0)
+plt.errorbar(balmer_dummy[5],contour_4_points[5],
+                xerr=np.median(df_choice["err_EW_Balmer_based_Robo"][bool_m20]),
+                yerr=np.median(df_choice["err_EW_CaIIK_from_robo"][bool_m20]), ecolor="k")  # [Fe/H] = -2.0
+'''
+bool_m25 = (df_choice["feh"] == -2.5)
+plt.errorbar(balmer_dummy[6],[10],
+                xerr=np.median(df_choice["err_EW_Balmer_based_Robo"][bool_m25]),
+                yerr=np.median(df_choice["err_EW_CaIIK_from_robo"][bool_m25]), ecolor="k")  # [Fe/H] = -2.5
+plt.text(balmer_dummy[6]+0.1,10+0.5,"-2.5")
+
+# plot isometallicity contours
+feh_nonred = np.array([-3.0,-2.5,-2.0,-1.5,-1.0,-0.5,0.0,0.2])
+plt.text(isometal_balmer_abcissa[0]-0.65,retrieved_K_isometal_pos0pt2[0]+2,"[Fe/H]")
 p02 = sns.lineplot(x=isometal_balmer_abcissa, y=retrieved_K_isometal_pos0pt2, color="k", alpha=0.5)
 plt.text(isometal_balmer_abcissa[0]-0.6,retrieved_K_isometal_pos0pt2[0],"+0.2")
 p00 = sns.lineplot(x=isometal_balmer_abcissa, y=retrieved_K_isometal_pos0pt0, color="k", alpha=0.5)
@@ -106,7 +150,7 @@ plt.text(isometal_balmer_abcissa[0]-0.6,retrieved_K_isometal_neg2pt0[0],"-2.0")
 m25 = sns.lineplot(x=isometal_balmer_abcissa, y=retrieved_K_isometal_neg2pt5, color="k", alpha=0.5)
 plt.text(isometal_balmer_abcissa[0]-0.6,retrieved_K_isometal_neg2pt5[0],"-2.5")
 
-plt.xlim([1,14])
+plt.xlim([1,16])
 plt.legend(loc="upper right", ncol=3)
 
 g.fig.set_size_inches(28,8)
