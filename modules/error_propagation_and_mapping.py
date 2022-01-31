@@ -12,7 +12,7 @@ from scipy import optimize
 from astropy.stats import bootstrap
 from astropy.utils import NumpyRNGContext
 from multiprocessing import Pool
-from rrlyrae_metallicity.modules2 import *
+#from rrlfe.modules2 import *
 
 class feh_plotter():
     '''

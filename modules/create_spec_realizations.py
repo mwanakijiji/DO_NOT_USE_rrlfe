@@ -37,8 +37,6 @@ current_dir = os.path.dirname(__file__)
 print("Current dir:")
 print(current_dir)
 
-#from rrlyrae_metallicity import *
-#from rrlyrae_metallicity.modules2 import *
 from . import *
 
 

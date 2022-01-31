@@ -31,7 +31,7 @@ config_red.read(os.path.join(os.path.dirname(__file__), '../conf', 'config_red.i
 
 # config for applying a calibration
 config_apply = ConfigParser(interpolation=ExtendedInterpolation())
-#config_apply.read("rrlyrae_metallicity/modules/config_apply.ini")
+
 config_apply.read(os.path.join(os.path.dirname(__file__), '../conf', 'config_apply.ini'))
 
 # set pathnames for important files that are used by different modules

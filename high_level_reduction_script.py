@@ -22,7 +22,7 @@ def main():
 
     # make all the directories
     make_dirs(objective = "find_calib") ## find_calib as opposed to apply_calib
-    '''
+
     # compile the C spectral normalization script
 
     compile_normalization.compile_bkgrnd()
@@ -31,11 +31,11 @@ def main():
     # spectra, normalize them, and write out normalizations
     ## ## just 1 or 2 realizations for testing (default is 100)
 
-    create_spec_realizations.create_spec_realizations_main(num = 10, noise_level=0.07, spec_file_type="ascii.no_header")
+    create_spec_realizations.create_spec_realizations_main(num = 100, noise_level=0.07, spec_file_type="ascii.no_header")
 
     # run_robospect on normalized synthetic spectra
     run_robo.main()
-    '''
+
     # scrape_ew_from_robo and calculate EWs + err_EW
     scraper_instance = scrape_ew_and_errew.Scraper()
     scraper_instance() # call instance
@@ -50,7 +50,7 @@ def main():
     data_net_balmer = scrape_ew_and_errew.generate_net_balmer()
 
     data_errors = scrape_ew_and_errew.generate_addl_ew_errors()
-    '''
+
     data_add_metadata = scrape_ew_and_errew.add_synthetic_meta_data()
 
     # finds the Teff calibration
@@ -67,7 +67,7 @@ def main():
     posterior_write = run_emcee.write_soln_to_fits(model = model_choice)
 
     posterior_sample = run_emcee.corner_plot(model = model_choice)
-    '''
+
 
 # entry point
 if __name__ == '__main__':

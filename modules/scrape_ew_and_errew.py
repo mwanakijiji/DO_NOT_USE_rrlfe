@@ -355,57 +355,48 @@ def generate_net_balmer(read_in_filename = config_red["data_dirs"]["DIR_EW_PRODS
     # read in
     df_poststack = pd.read_csv(read_in_filename)
 
+    ####### BETWEEN HERE...
+
     # to generate a net Balmer line, make a rescaling of Hgamma
     # based on Hdelta
     logging.info("Making a net Balmer line")
 
-    # fit a straight line to all the Hgam vs Hdel
-    EW_Hdelta = df_poststack["EW_Hdelta"].values.astype(float) # Hdel
-    EW_Hgamma = df_poststack["EW_Hgamma"].values.astype(float) # Hgam
-    # better names for clarity below
-    err_Hgamma = df_poststack["err_EW_Hgamma_from_robo"].values
-
-
-
-    # safety check that both pairs of coordinates used for the fit are simultaneously finite
+    # get rid of *really* bad points, and make sure they're simultaneously finite
     # (otherwise a skipped 'nan' may cause a phase shift between the two series)
-    idx_good = np.logical_and(np.isfinite(EW_Hdelta),np.isfinite(EW_Hgamma))
-    # polyfit (x, y)
-    coeff, cov = np.polyfit(EW_Hdelta[idx_good], EW_Hgamma[idx_good], 1, full=False, cov=True)
-    m = coeff[0]
-    b = coeff[1]
-    err_m = np.sqrt(np.diag(cov))[0]
-    err_b = np.sqrt(np.diag(cov))[1]
 
-    # generate a rescaled Hgamma, call it rHgam; this is what will become the
-    # 'net Balmer' line
-    EW_rHgam = np.divide(np.subtract(EW_Hgamma, b), m)
-    # find corresponding error`
-    piece1 = np.add(np.power(err_Hgamma,2),np.power(err_b,2)).astype(float)
-    piece2 = np.power(np.subtract(EW_Hgamma,b),2)
-    piece3 = np.divide(np.power(err_m,2),np.power(m,2))
-    #err_rHgam = np.multiply(EW_rHgam,np.sqrt(np.subtract(np.divide(piece1,piece2),piece3)))
-    # fill with placeholder nans for now
-    err_rHgam = EW_Hgamma*np.sqrt(np.add(np.divide(piece1,piece2),piece3))
+    idx_cond = np.logical_and(
+                            np.logical_and(df_poststack["EW_Hdelta"] > 0.5, df_poststack["EW_Hdelta"] < 20.),
+                            np.logical_and(df_poststack["EW_Hgamma"] > 0.5, df_poststack["EW_Hgamma"] < 20.)
+                            )
 
-    # test: a line of best fit to the Hdelta and rHgamma should be a 1-to-1 line
-    idx_good_test = np.logical_and(np.isfinite(EW_Hdelta),np.isfinite(EW_rHgam))
-    coeff_test, cov_test = np.polyfit(EW_Hdelta[idx_good_test], EW_rHgam[idx_good_test], 1, full=False, cov=True)
-    m_1to1 = coeff_test[0]
-    b_1to1 = coeff_test[1]
-    err_m_1to1 = np.sqrt(np.diag(cov_test))[0]
-    err_b_1to1 = np.sqrt(np.diag(cov_test))[1]
+    EW_Hgamma_good = df_poststack["EW_Hgamma"].where(idx_cond).dropna()
+    EW_Hdelta_good = df_poststack["EW_Hdelta"].where(idx_cond).dropna()
 
-    # add column of rescaled Hgamma to DataFrame
-    df_poststack["EW_Balmer"] = EW_rHgam
-    df_poststack["err_EW_Balmer_based_Robo"] = err_rHgam
+    # fit a straight line to all the (good) Hgam vs Hdel
+    coeff_initial, cov_initial = np.polyfit(EW_Hdelta_good, EW_Hgamma_good, deg=1, full=False, cov=True)
+    m = coeff_initial[0]
+    b = coeff_initial[1]
+    err_m = np.sqrt(np.diag(cov_initial))[0]
+    err_b = np.sqrt(np.diag(cov_initial))[1]
+
+    # Propagate the error by simply doing
+    #
+    # err_W_B = sqrt ( err_W_delta^2 + err_W_gamma^2 )
+
+    # add column of net Balmer line
+    df_poststack["EW_Balmer"] = 0.5*np.add(df_poststack["EW_Hgamma"],df_poststack["EW_Hdelta"]) # simple average; note these are all of the spectra
+    df_poststack["err_EW_Balmer_based_Robo"] = np.sqrt(
+                                                        np.add( np.power(df_poststack["err_EW_Hdelta_from_robo"],2.),
+                                                                np.power(df_poststack["err_EW_Hgamma_from_robo"],2.)
+                                                                )
+                                                        ) # sigma_B
 
     # write out
     df_poststack.to_csv(write_out_filename,index=False)
     logging.info("Table with net Balmer line EWs written to " + str(write_out_filename))
 
     # returns parameters of line fit, and DataFrame with net Balmer info
-    return [m, err_m, b, err_b], [m_1to1, err_m_1to1, b_1to1, err_b_1to1], df_poststack
+    return [m, err_m, b, err_b], df_poststack
 
 
 def generate_addl_ew_errors(read_in_filename = config_red["data_dirs"]["DIR_EW_PRODS"]+config_red["file_names"]["RESTACKED_EW_DATA_W_NET_BALMER"],
