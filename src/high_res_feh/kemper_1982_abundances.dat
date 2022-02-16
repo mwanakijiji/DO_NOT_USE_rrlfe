@@ -1,67 +1,67 @@
 name,feh
-DK And,-0.77
-BV Aqr,-1.48
-V766 Aql,-1.98
-V793 Aql,-1.53
-V895 Aql,-0.54
-RW Ari,-1.48
-DN Aur,-0.46
-TV Boo,-2.17
-AE Boo,-1.48
-BR Boo,-1.03
-UY Cam,-1.06
-ST CVn,-0.98
-XY CVn,-2.03
-XZ CVn,-1.46
-YZ Cap,-1.29
-QY Cas,-1.30
-RZ Cep,-1.48
-U Com,-1.32
-RV Com,-1.61
-AG Com,-1.79
-AH Com, -1.65
-CW Com,-0.96
-RV CrB,-1.51
-V789 Cyg,-0.91
-V882 Cyg,-1.42
-V997 Cyg,-0.77
-CE Del,-0.68
-CH Del, -1.23
-CS Del,-0.92
-FP Del,-1.44
-II Del,-1.30
-GV Her,-1.41
-MP Her,-1.18
-V458 Her,-1.65
-BB Leo,-1.32
-BX Leo,-1.23
-AQ Lib,-0.60
-CG Lib,-1.82
-TV Lyn,-0.99
-DR Lyr,-1.41
-EX Lyr,-0.63
-LQ Lyr,-1.39
-LR Lyr,-1.41
-V535 Mon,-1.44
-V558 Oph,-1.48
-V700 Oph,-2.10
-V968 Oph,-1.48
-V1017 Oph,-1.25
-V1041 Oph,-1.06
-VZ Peg,-1.75
-DH Peg,-1.04
-KV Per,-0.96
-RU Psc,-1.65
-V487 Sco,-1.67
-SV Scl,-1.82
-AP Ser,-1.37
-DY Ser,-1.58
-T Sex,-1.18
-YZ Tau,-1.53
-MT Tel,-1.82
-AM Tuc,-1.82
-SX UMa,-1.82
-BK UMa,-1.29
-BN UMa,-1.65
-AU Vir,-1.84
-BS Vir,-1.84
+DK_And,-0.77
+BV_Aqr,-1.48
+V766_Aql,-1.98
+V793_Aql,-1.53
+V895_Aql,-0.54
+RW_Ari,-1.48
+DN_Aur,-0.46
+TV_Boo,-2.17
+AE_Boo,-1.48
+BR_Boo,-1.03
+UY_Cam,-1.06
+ST_CVn,-0.98
+XY_CVn,-2.03
+XZ_CVn,-1.46
+YZ_Cap,-1.29
+QY_Cas,-1.30
+RZ_Cep,-1.48
+U_Com,-1.32
+RV_Com,-1.61
+AG_Com,-1.79
+AH_Com, -1.65
+CW_Com,-0.96
+RV_CrB,-1.51
+V789_Cyg,-0.91
+V882_Cyg,-1.42
+V997_Cyg,-0.77
+CE_Del,-0.68
+CH_Del, -1.23
+CS_Del,-0.92
+FP_Del,-1.44
+II_Del,-1.30
+GV_Her,-1.41
+MP_Her,-1.18
+V458_Her,-1.65
+BB_Leo,-1.32
+BX_Leo,-1.23
+AQ_Lib,-0.60
+CG_Lib,-1.82
+TV_Lyn,-0.99
+DR_Lyr,-1.41
+EX_Lyr,-0.63
+LQ_Lyr,-1.39
+LR_Lyr,-1.41
+V535_Mon,-1.44
+V558_Oph,-1.48
+V700_Oph,-2.10
+V968_Oph,-1.48
+V1017_Oph,-1.25
+V1041_Oph,-1.06
+VZ_Peg,-1.75
+DH_Peg,-1.04
+KV_Per,-0.96
+RU_Psc,-1.65
+V487_Sco,-1.67
+SV_Scl,-1.82
+AP_Ser,-1.37
+DY_Ser,-1.58
+T_Sex,-1.18
+YZ_Tau,-1.53
+MT_Tel,-1.82
+AM_Tuc,-1.82
+SX_UMa,-1.82
+BK_UMa,-1.29
+BN_UMa,-1.65
+AU_Vir,-1.84
+BS_Vir,-1.84

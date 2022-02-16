@@ -1,33 +1,33 @@
 name,feh
-SW And,-0.36
-AT And,-1.14
-TY Aps,-0.92
-XZ Aps,-0.55
-BV Aqr,-1.18
-RS Boo,-0.31
-AE Boo,-1.18
-RR Cet,-1.31
-DX Del,-0.39
-SU Dra,-1.97
-SW Dra,-0.74
-CS Eri,-1.41
-XZ Gru,-1.37
-XX Hya,-1.22
-IK Hya,-1.24
-FW Lup,-0.20
-TT Lyn,-1.34
-CN Lyr,-1.10
-KX Lyr,-0.41
-VY Nor,-2.01
-DH Peg,-1.35
-DZ Peg,-1.21
-VZ Peg,-1.63
-AR Per,-0.23
-VW Scl,-0.84
-VY Ser,-1.53
-AP Ser,-1.62
-T Sex,-1.27
-MT Tel,-1.64
-SX UMa,-1.63
-TU UMa,-1.66
-AM Vir,-1.30
+SW_And,-0.36
+AT_And,-1.14
+TY_Aps,-0.92
+XZ_Aps,-0.55
+BV_Aqr,-1.18
+RS_Boo,-0.31
+AE_Boo,-1.18
+RR_Cet,-1.31
+DX_Del,-0.39
+SU_Dra,-1.97
+SW_Dra,-0.74
+CS_Eri,-1.41
+XZ_Gru,-1.37
+XX_Hya,-1.22
+IK_Hya,-1.24
+FW_Lup,-0.20
+TT_Lyn,-1.34
+CN_Lyr,-1.10
+KX_Lyr,-0.41
+VY_Nor,-2.01
+DH_Peg,-1.35
+DZ_Peg,-1.21
+VZ_Peg,-1.63
+AR_Per,-0.23
+VW_Scl,-0.84
+VY_Ser,-1.53
+AP_Ser,-1.62
+T_Sex,-1.27
+MT_Tel,-1.64
+SX_UMa,-1.63
+TU_UMa,-1.66
+AM_Vir,-1.30

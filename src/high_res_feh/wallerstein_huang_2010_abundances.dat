@@ -1,25 +1,25 @@
 name,feh
-V445 Oph,0.24
-RR Gem,0.01
-SW And,-0.16
-DX Del,-0.21
-AR Per,-0.32
-KX Lyr,-0.57
-XZ Dra,-0.75
-UU Vir,-0.90
-BH Peg,-1.17
-W CVn,-1.22
-VZ Her,-1.30
-RV UMa,-1.31
-RR Leo,-1.39
-TT Lyn,-1.41
-RR Lyr,-1.44
-TU UMa,-1.46
-VX Her,-1.48
-DH Peg,-1.53
-RR Cet,-1.61
-ST Boo,-1.77
-SV Eri,-1.94
-RU Psc,-2.04
-RZ Cep,-2.10
-X Ari,-2.68
+V445_Oph,0.24
+RR_Gem,0.01
+SW_And,-0.16
+DX_Del,-0.21
+AR_Per,-0.32
+KX_Lyr,-0.57
+XZ_Dra,-0.75
+UU_Vir,-0.90
+BH_Peg,-1.17
+W_CVn,-1.22
+VZ_Her,-1.30
+RV_UMa,-1.31
+RR_Leo,-1.39
+TT_Lyn,-1.41
+RR_Lyr,-1.44
+TU_UMa,-1.46
+VX_Her,-1.48
+DH_Peg,-1.53
+RR_Cet,-1.61
+ST_Boo,-1.77
+SV_Eri,-1.94
+RU_Psc,-2.04
+RZ_Cep,-2.10
+X_Ari,-2.68
