@@ -416,6 +416,7 @@ def generate_addl_ew_errors(read_in_filename = config_red["data_dirs"]["DIR_EW_P
     df_postbalmer["err_EW_Hdelta_based_noise_churning"] = np.nan # initialize
     df_postbalmer["err_EW_Hgamma_based_noise_churning"] = np.nan # initialize
     df_postbalmer["err_EW_Heps_based_noise_churning"] = np.nan # initialize
+    df_postbalmer["err_EW_CaIIK_based_noise_churning"] = np.nan # initialize
     for orig_spec in orig_specs_nonrepeating:
         # loop over the parent spectra, and get stdev of EWs from each set
         # of spectra with the same parent
@@ -439,6 +440,10 @@ def generate_addl_ew_errors(read_in_filename = config_red["data_dirs"]["DIR_EW_P
         # Hepsilon
         stdev_this_set_Heps = np.nanstd(df_postbalmer.where(df_postbalmer["orig_spec_file_name"] == orig_spec)["EW_Heps"])
         df_postbalmer.loc[(df_postbalmer["orig_spec_file_name"] == orig_spec),"err_EW_Heps_based_noise_churning"] = stdev_this_set_Heps
+
+        # CaIIK
+        stdev_this_set_CaIIK = np.nanstd(df_postbalmer.where(df_postbalmer["orig_spec_file_name"] == orig_spec)["EW_CaIIK"])
+        df_postbalmer.loc[(df_postbalmer["orig_spec_file_name"] == orig_spec),"err_EW_CaIIK_based_noise_churning"] = stdev_this_set_CaIIK
 
     df_postbalmer_errors = df_postbalmer.to_csv(write_out_filename, index=False)
 
@@ -522,8 +527,8 @@ def stack_spectra(
     for t in range(0,num_indiv_spectra):
         # loop over all spectra realizations we have measured EWs from to populate the dataframe
 
-        this_spectrum = list_indiv_spectra[t]
-        logging.info("Extracting EW data corresponding to " + this_spectrum)
+        this_realization_spectrum = list_indiv_spectra[t]
+        logging.info("Extracting EW data corresponding to " + this_realization_spectrum)
 
         # extract original file name (the one from which realizations are made)
         # loop over all the original spectrum names; which contains a string that
@@ -532,22 +537,25 @@ def stack_spectra(
         #for orig_num in range(0,len(original_names)):
         condition_array = []
 
-        # this appears to be obsolete
-        for this_name in original_names["orig_spec_file_name"]:
-            condition_array.append(this_name.split(".")[0] in this_spectrum)
+        for this_parent_spectrum in original_names["orig_spec_file_name"]:
+            # based on naming convention where noise-churned spec is given a 'ver' name
+            # ex. (original, realization) = (700030p00.smo, 700030p00_noise_ver_009.smo)
+            trunc_name_parent_spectrum = this_parent_spectrum.split(".")[0]
+            condition_array.append(trunc_name_parent_spectrum in this_realization_spectrum)
 
         try:
             orig_name = original_names[condition_array]["orig_spec_file_name"].values[0]
         except: # pragma: no cover
             # sanity check: if strings are not shared, abort
             input("Spectrum file strings don't match!!")
-
-        # select data from table relevant to this spectrum
-        data_this_spectrum = df_prestack.where(df_prestack["realization_spec_file_name"] == this_spectrum).dropna().reset_index()
         #import ipdb; ipdb.set_trace()
 
+        # select data from table relevant to this spectrum realization
+        data_this_spectrum = df_prestack.where(df_prestack["realization_spec_file_name"] == this_realization_spectrum).dropna().reset_index()
+        #orig_name = original_names[condition_array]["orig_spec_file_name"].values[0]
+
         try:
-            # extract Balmer lines from the table of data from all the spectra
+            # extract Balmer lines from the table of data for this specific spectrum realization
             Hbeta = data_this_spectrum["EQW"].where(data_this_spectrum["line_name"] == "Hbet").dropna().values[0]
             err_Hbeta = data_this_spectrum["uncertaintyEQW"].where(data_this_spectrum["line_name"] == "Hbet").dropna().values[0]
 
@@ -564,7 +572,7 @@ def stack_spectra(
             err_CaIIK = data_this_spectrum["uncertaintyEQW"].where(data_this_spectrum["line_name"] == "CaIIK").dropna().values[0]
 
             # fill in that row in the dataframe
-            df_poststack.iloc[t]["realization_spec_file_name"] = this_spectrum
+            df_poststack.iloc[t]["realization_spec_file_name"] = this_realization_spectrum
             df_poststack.iloc[t]["orig_spec_file_name"] = orig_name
             df_poststack.iloc[t]["EW_Hbeta"] = Hbeta
             df_poststack.iloc[t]["err_EW_Hbeta_from_robo"] = err_Hbeta
@@ -578,9 +586,10 @@ def stack_spectra(
             df_poststack.iloc[t]["err_EW_CaIIK_from_robo"] = err_CaIIK
 
         except: # pragma: no cover
-            logging.error("Data stacking error in data for " + this_spectrum)
-            logging.error("Data anomaly; skipping " + this_spectrum)
-
+            logging.error("Data stacking error in data for " + this_realization_spectrum)
+            logging.error("Data anomaly; skipping " + this_realization_spectrum)
+            #import ipdb; ipdb.set_trace()
+    #import ipdb; ipdb.set_trace()
     # save intermediary table of data, before adding rescaled Balmer line
     logging.info("Writing out intermediary file of stacked Robospect EWs and rescaled Balmer lines to " + write_out_filename)
     df_poststack.to_csv(write_out_filename,index=False)
