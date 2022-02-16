@@ -1,5 +1,5 @@
 '''
-Takes literature metallicities and makes new Fe/H basis
+Reads in literature metallicities and makes new Fe/H basis
 '''
 
 import pickle
@@ -824,3 +824,8 @@ def calc_feh_program_stars(pickle_subdir=config_red["data_dirs"]["DIR_PICKLE"]):
     print(rrc_basis_w_rrab_offsets)
 
     return
+
+
+# entry point
+if __name__ == '__main__':
+    sys.exit(main())
