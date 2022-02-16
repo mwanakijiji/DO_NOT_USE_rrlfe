@@ -432,7 +432,7 @@ class RunEmcee():
         #ecaii = df_choice['err_EW_CaIIK']
         #ave = np.divide(df_choice['balmer'], 1000.)
         ave = df_choice['EW_Balmer']
-        eave = df_choice['err_EW_Balmer_based_Robo']
+        eave = df_choice['err_EW_Balmer_from_Robo']
         #eave = np.divide(df_choice['err_balmer'], 1000.)
         ## ## THE BELOW FEH VALUES NEED TO BE CHECKED/FIXED
         feh = df_choice['feh']

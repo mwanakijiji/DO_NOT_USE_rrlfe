@@ -270,10 +270,16 @@ def read_spec(spec_name, format):
     logging.info("Reading spectrum " + spec_name)
 
     if (format == "ascii.no_header"):
-        # this option is antiquated; we want to preserve FITS header info
-        spec_tab = Table.read(spec_name, format='ascii.no_header',
+
+        try:
+            spec_tab = Table.read(spec_name, format='ascii.no_header',
                           names=['wavelength', 'flux', 'error'])
-        hdr = np.nan
+            hdr = np.nan
+
+        except IOError:
+            # this error should be redundant, since upstream the input file list
+            # should be checked with what is in the input directory
+            logging.info("File {} not found!".format(spec_name))
 
     else: # pragma: no cover
         logging.info("File format unknown!!!")
@@ -356,8 +362,39 @@ def create_spec_realizations_main(noise_level,
     # Read list of input spectra
     # input_list ALREADY SET IN DEFAULTS ## input_list = input_spec_list_dir + config_red["file_names"]["LIST_SPEC_PHASE"]
     list_arr = read_list(input_list)
+
     #logging.info('list_arr')
     #logging.info(list_arr)
+
+    # Check to make sure the files in the list are actually in the input directory;
+    # if not, just remove those from the list and set a warning
+    list_actually_there = glob.glob(unnorm_empirical_spectra_dir + "*.dat")
+    list_actually_basenames = np.array([os.path.basename(t) for t in list_actually_there])
+
+    num_sought = len(list_arr) # number of wanted files
+    num_existing = np.sum(np.in1d(list_arr, list_actually_basenames)) # number of wanted files found
+    bool_present = np.in1d(list_arr, list_actually_basenames, invert=False)
+    bool_missing = np.in1d(list_arr, list_actually_basenames, invert=True)
+    files_missing = list_arr[bool_missing] # files in input list, but not found
+    files_present = list_arr[bool_present] # files in input list, and found
+    num_extra = np.sum(np.in1d(list_actually_basenames, list_arr, invert=True)) # number of extra files found in the input directory
+
+    # did we find all the spectra we wanted?
+    if (num_existing < num_sought):
+        logging.warning(print("Found only "+str(num_existing)+" of "+str(num_sought)+" spectra in input list"))
+        logging.warning("Files missing from input directory:")
+        logging.warning(files_missing)
+    else:
+        logging.info("All spectra in input list found in input directory")
+
+    # did any other spectra appear in the directory, which may or may not be a good thing?
+    if (num_extra > 1):
+        logging.warning(print("Found "+str(num_extra)+" files in directory which do not appear in input list"))
+    else:
+        logging.info("No spectra found in input directory which do not appear in input list.")
+
+    # if there are files missing from the directory, just remove those from the input list
+    list_arr = files_present
 
     # Check to make sure outdir (to receive realizations of spectra) exists
     outdir = unnorm_noise_churned_spectra_dir

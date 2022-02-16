@@ -385,7 +385,7 @@ def generate_net_balmer(read_in_filename = config_red["data_dirs"]["DIR_EW_PRODS
 
     # add column of net Balmer line
     df_poststack["EW_Balmer"] = 0.5*np.add(df_poststack["EW_Hgamma"],df_poststack["EW_Hdelta"]) # simple average; note these are all of the spectra
-    df_poststack["err_EW_Balmer_based_Robo"] = np.sqrt(
+    df_poststack["err_EW_Balmer_from_Robo"] = np.sqrt(
                                                         np.add( np.power(df_poststack["err_EW_Hdelta_from_robo"],2.),
                                                                 np.power(df_poststack["err_EW_Hgamma_from_robo"],2.)
                                                                 )
@@ -400,11 +400,17 @@ def generate_net_balmer(read_in_filename = config_red["data_dirs"]["DIR_EW_PRODS
 
 
 def generate_addl_ew_errors(read_in_filename = config_red["data_dirs"]["DIR_EW_PRODS"]+config_red["file_names"]["RESTACKED_EW_DATA_W_NET_BALMER"],
-                            write_out_filename = config_red["data_dirs"]["DIR_EW_PRODS"]+config_red["file_names"]["RESTACKED_EW_DATA_W_NET_BALMER_ERRORS"]):
+                            write_out_filename = config_red["data_dirs"]["DIR_EW_PRODS"]+config_red["file_names"]["RESTACKED_EW_DATA_W_NET_BALMER_ERRORS"],
+                            groupby_parent = True):
     '''
     Calculates errors in EW using the method of finding the stdev of EWs across
     a set of spectra that are realizations of the same single, original spectrum.
     This supplements the errors produced directly by Robospect.
+
+    groupby_parent: collapse noise-churned spectra into 1 after calculating the EW errors;
+        else write out a giant table containing data for all noise-churned spectra,
+        which is useful if calibration is being applied, and Fe/H will be retrieved
+        across all churnings and that will give Fe/H error
     '''
 
     #df_poststack = error_scatter_ew(df_poststack)
@@ -445,10 +451,21 @@ def generate_addl_ew_errors(read_in_filename = config_red["data_dirs"]["DIR_EW_P
         stdev_this_set_CaIIK = np.nanstd(df_postbalmer.where(df_postbalmer["orig_spec_file_name"] == orig_spec)["EW_CaIIK"])
         df_postbalmer.loc[(df_postbalmer["orig_spec_file_name"] == orig_spec),"err_EW_CaIIK_based_noise_churning"] = stdev_this_set_CaIIK
 
-    df_postbalmer_errors = df_postbalmer.to_csv(write_out_filename, index=False)
 
-    logging.info("Adding column of EW errors based on stdev across noise-churned spectra")
+    logging.info("Added column of EW errors based on stdev across noise-churned spectra")
+
+    if groupby_parent:
+        # collapse the noise-churned data such that there is only one row for each parent spectrum
+        df_postbalmer_grouped = df_postbalmer.groupby("orig_spec_file_name", as_index=False).median()
+        df_postbalmer_errors = df_postbalmer_grouped.to_csv(write_out_filename, index=False)
+        logging.info("Grouped spectra by parent, and collapsed by taking median down the columns.")
+
+    else:
+
+        logging.info("Did not group spectra by parent; table with all noise churnings will be written out.")
+
     logging.info("Wrote table out to " + str(write_out_filename))
+
 
     '''
     logging.info("------------------------------")

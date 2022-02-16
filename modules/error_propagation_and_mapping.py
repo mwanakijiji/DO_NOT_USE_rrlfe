@@ -375,7 +375,7 @@ class feh_mapper(feh_plotter):
         m_array, b_array, params_list_star_feh, data_1 = self.do_bootstrap()
 
         # parallel process the Fe/H info
-        ncpu = multiprocessing.cpu_count()
+        #ncpu = multiprocessing.cpu_count()
         pool = Pool(ncpu)
         outdat = pool.map(self.map_feh_one_star, params_list_star_feh) # FeH info is pickled here
         pool.close()
