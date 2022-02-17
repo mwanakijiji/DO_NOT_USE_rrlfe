@@ -126,12 +126,16 @@ class findFeH():
         self.ew_data["teff_retrieved"] = np.nan
 
         # loop over the rows of the table of good EW data, with each row
-        # corresponding to a spectrum
+        # corresponding to a spectrum; note that, depending on user setting
+        # 'groupby,' this could either be a parent spectrum or individual noise-churned
+        # spectra; the stuff that gets printed to screen here just uses the parent
+        # spectrum name
         for row_num in range(0,len(self.ew_data)):
 
             print("-------------")
             print(row_num)
-            logging.info("Finding Fe/H for spectrum " + str(self.ew_data.iloc[row_num]["realization_spec_file_name"]))
+            #import ipdb; ipdb.set_trace()
+            logging.info("Finding Fe/H for spectrum " + str(self.ew_data.iloc[row_num]["orig_spec_file_name"]))
 
             Balmer_EW = self.ew_data.iloc[row_num]["EW_Balmer"]
             CaIIK_EW = self.ew_data.iloc[row_num]["EW_CaIIK"]
@@ -212,7 +216,7 @@ class findFeH():
 
             # write the results (note this pickle file just corresponds to one spectrum)
             #import ipdb; ipdb.set_trace()
-            print("feh", np.nanmedian(feh_sample))
+            print("[Fe/H] = ", np.nanmedian(feh_sample))
             self.ew_data.at[row_num,"feh_retrieved"] = np.nanmedian(feh_sample)
             self.ew_data.at[row_num,"err_feh_retrieved"] = np.std(feh_sample)
             self.ew_data.at[row_num,"teff_retrieved"] = np.add(

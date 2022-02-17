@@ -461,7 +461,7 @@ def generate_addl_ew_errors(read_in_filename = config_red["data_dirs"]["DIR_EW_P
         logging.info("Grouped spectra by parent, and collapsed by taking median down the columns.")
 
     else:
-
+        df_postbalmer_errors = df_postbalmer.to_csv(write_out_filename, index=False)
         logging.info("Did not group spectra by parent; table with all noise churnings will be written out.")
 
     logging.info("Wrote table out to " + str(write_out_filename))
