@@ -52,9 +52,10 @@ def create_norm_spec(name_list,
     puts out wavelength, flux, and continuum flux, but not the actual normalized flux)
 
     Arguments:
-        name_list: List of Realization file names (no path info)
-        normdir: bkgrnd ascii files
-        finaldir: The final directory for files which have completed the full normalization process.
+        name_list: List of Realization file names (no path info); should have 3 cols
+        normdir: Directory where files in name_list are located
+        finaldir: The final directory for files which have completed the full
+            normalization process; these will have 3 cols too
     Returns:
        A list of final file names
     '''
@@ -80,7 +81,7 @@ def create_norm_spec(name_list,
         try:
             # open file to write normalized spectrum to
             outfile = open(new_name, 'w')
-        except IOError:
+        except IOError:  # pragma: no cover
             logging.info("File {} could not be opened!".format(new_name))
         for j in range(len(spec_tab['wavelength'])):
             # do the division to normalize and write out
@@ -171,14 +172,15 @@ def generate_realizations(spec_name, outdir, spec_file_format, num, noise_level)
         #import ipdb; ipdb.set_trace()
 
         ### write out new realization of file, in two formats:
-
+        '''
+        ## ## obsolete?
         df_realization = Table([spec_tab["wavelength"], new_flux],
                                 names=("wavelength","new_flux"))
         # set column names and write
         c1=fits.Column(name="wavelength", format='D', array=spec_tab["wavelength"])
         c2=fits.Column(name="new_flux", format='D', array=new_flux)
         t = fits.BinTableHDU.from_columns([c1, c2], header=hdr)
-
+        '''
         ## second format: ascii, so bkgrnd can read it in
         logging.info("Writing out ascii realization file " + new_name_ascii + \
             " with noise level stdev " + str(np.std(noise_to_add)))
@@ -448,6 +450,7 @@ def create_spec_realizations_main(noise_level,
     #import ipdb; ipdb.set_trace()
     for i in range(len(list_arr)): # make spectrum realizations and list of their filenames
         #import ipdb; ipdb.set_trace()
+        print(i)
         name_list.extend(generate_realizations(spec_name=unnorm_empirical_spectra_dir+"/"+list_arr[i],
                                                outdir=outdir,
                                                spec_file_format=spec_file_type,

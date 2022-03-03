@@ -5,6 +5,7 @@ import sys, os
 from configparser import ConfigParser, ExtendedInterpolation
 import pandas as pd
 import astropy
+import pytest
 
 current_dir = os.path.dirname(__file__)
 target_dir = os.path.abspath(os.path.join(current_dir, "../"))
@@ -147,19 +148,35 @@ def test_create_norm_spec():
                             "test_bkgrnd_output_575020m05_noise_ver_001.smo",
                             ]
 
+
     #test_input_name_list = config_red["data_dirs"]["TEST_DIR_SRC"] + "test_input_file_list.list"
     ## ## note TEST_BIN might be changed to TEST_DIR_REZNS_SPEC_NORM, if it can be changed across multiple functions
     test_new_name_list = create_spec_realizations.create_norm_spec(
                             name_list=test_input_name_list,
                             normdir=config_red["data_dirs"]["TEST_DIR_REZNS_SPEC"],
                             finaldir=config_red["data_dirs"]["TEST_DIR_REZNS_SPEC_NORM"])
-    #test_name_list =
-    #test_normdir =
-    #test_final_dir =
-    #final_list = create_norm_spec(name_list, normdir, final_dir)
 
-    # is min smaller than max
-    assert 1<2 #len(test_new_name_list) < 1
+    # new file name list should have full path and same basename
+    assert [i.split("/")[-1] for i in test_new_name_list] == test_input_name_list
+
+    # a non-existent file
+    test_nonexistent_list = ["test_bkgrnd_output_575020m05_noise_ver_000_nonexistent.smo"]
+    test_new_name_list = create_spec_realizations.create_norm_spec(
+                                name_list=test_nonexistent_list,
+                                normdir=config_red["data_dirs"]["TEST_DIR_REZNS_SPEC"],
+                                finaldir=config_red["data_dirs"]["TEST_DIR_REZNS_SPEC_NORM"])
+
+'''
+def test_fails():
+    with pytest.raises(Exception) as e_info:
+        x = 1 / 1
+'''
+'''
+def test_1_cannot_add_int_and_str(self):
+    with self.assertRaises(TypeError):
+        1 + '1'
+'''
+#pytest.raises(Exception)
 
 
 def test_read_list():

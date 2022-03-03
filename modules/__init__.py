@@ -81,6 +81,8 @@ def make_dirs(objective="apply_calib"):
     # make directories for
     # 1. reduction of spectra to find a, b, c, d (objective = "find_calib"), or
     # 2. to apply the solution (objective = "apply_calib"; default)
+    print("----------")
+    print(objective)
     if (objective == "apply_calib"):
         config_choice = config_apply
     elif (objective == "find_calib"):

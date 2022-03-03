@@ -247,14 +247,14 @@ def quality_check(
     # remove duplicate names
     bad_robo_spectra_uniq = bad_robo_spectra.drop_duplicates()
     # flag as bad the spectra with those names
-    all_data["quality"][all_data["realization_spec_file_name"].isin(bad_robo_spectra_uniq)] = "B"
+    all_data.loc[all_data["realization_spec_file_name"].isin(bad_robo_spectra_uniq),"quality"] = "B"
 
     # Criterion 2. Remove rows where the line centers are not right, using steps similar to above
     # (specifically, if measured line center is more than 10 A away from perfect center)
     where_bad_line_center = np.where(np.abs(np.subtract(all_data["wavel_found_center"],all_data["wavel_stated_center"]) > 10))
     bad_line_center_spectra = all_data["realization_spec_file_name"][np.squeeze(where_bad_line_center,axis=0)] # squeeze necessary to preserve finite size
     bad_line_center_spectra_uniq = bad_line_center_spectra.drop_duplicates()
-    all_data["quality"][all_data["realization_spec_file_name"].isin(bad_line_center_spectra_uniq)] = "B"
+    all_data.loc[all_data["realization_spec_file_name"].isin(bad_line_center_spectra_uniq),"quality"] = "B"
 
     # Criterion 3. Remove rows with EWs which are clearly unrealistically large which slipped through other checks
     # (this is particularly an issue with the CaIIK line, which is close to CaIIH)
@@ -264,7 +264,7 @@ def quality_check(
     where_bad_CaIIK = np.where(np.logical_and(all_data["line_name"] == "CaIIK", all_data["EQW"] > 18))
     bad_CaIIK_spectra = all_data["realization_spec_file_name"][np.squeeze(where_bad_CaIIK)]
     bad_CaIIK_spectra_uniq = bad_CaIIK_spectra.drop_duplicates()
-    all_data["quality"][all_data["realization_spec_file_name"].isin(bad_CaIIK_spectra_uniq)] = "B"
+    all_data.loc[all_data["realization_spec_file_name"].isin(bad_CaIIK_spectra_uniq),"quality"] = "B"
 
     # Criterion 4. Remove bad phases (for empirical data)
     '''
@@ -372,19 +372,15 @@ def generate_net_balmer(read_in_filename = config_red["data_dirs"]["DIR_EW_PRODS
     EW_Hgamma_good = df_poststack["EW_Hgamma"].where(idx_cond).dropna()
     EW_Hdelta_good = df_poststack["EW_Hdelta"].where(idx_cond).dropna()
 
-    # fit a straight line to all the (good) Hgam vs Hdel
-    coeff_initial, cov_initial = np.polyfit(EW_Hdelta_good, EW_Hgamma_good, deg=1, full=False, cov=True)
-    m = coeff_initial[0]
-    b = coeff_initial[1]
-    err_m = np.sqrt(np.diag(cov_initial))[0]
-    err_b = np.sqrt(np.diag(cov_initial))[1]
+    # vestigial from when we were trying to scale the lines instead of simply averaging them
+    [m, err_m, b, err_b] = [0,0,0,0]
 
     # Propagate the error by simply doing
     #
     # err_W_B = sqrt ( err_W_delta^2 + err_W_gamma^2 )
 
     # add column of net Balmer line
-    df_poststack["EW_Balmer"] = 0.5*np.add(df_poststack["EW_Hgamma"],df_poststack["EW_Hdelta"]) # simple average; note these are all of the spectra
+    df_poststack["EW_Balmer"] = 0.5*np.add(df_poststack["EW_Hgamma"],df_poststack["EW_Hdelta"], axis=1) # simple average; note these are all of the spectra
     df_poststack["err_EW_Balmer_from_Robo"] = np.sqrt(
                                                         np.add( np.power(df_poststack["err_EW_Hdelta_from_robo"],2.),
                                                                 np.power(df_poststack["err_EW_Hgamma_from_robo"],2.)
