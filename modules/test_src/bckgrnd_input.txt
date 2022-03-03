@@ -1,4 +1,4 @@
-/Users/bandari/Documents/git.repos/rrlyrae_metallicity/modules/test_src/ /Users/bandari/Documents/git.repos/rrlyrae_metallicity/modules/test_bin/
+/Users/bandari/Documents/git.repos/rrlfe/modules/test_src/ /Users/bandari/Documents/git.repos/rrlfe/modules/test_bin/
 dummy_spec_001.dat
 dummy_spec_002.dat
 dummy_spec_003.dat

@@ -25,7 +25,7 @@ def test_make_dirs():
     # call function to make directories
     # (here we choose 'objective' to apply a calibration, though it could
     # also be to find a new calibration)
-    make_dirs(objective = "find_abcd")
+    make_dirs(objective = "find_calib")
 
     # do all the directories exist now?
     for vals in config_red["data_dirs"]:

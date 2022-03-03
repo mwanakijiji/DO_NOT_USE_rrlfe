@@ -34,28 +34,6 @@ def test_make_dirs():
         assert os.path.exists(abs_path_name)
 '''
 
-def test_create_norm_spec():
-    '''
-    Create final normalized spectra, using the output from the bkgrnd routine (which
-    puts out wavelength, flux, and continuum flux, but not the actual normalized flux)
-
-    Arguments:
-        name_list: List of Realization file names (no path info)
-        normdir: bkgrnd ascii files
-        finaldir: The final directory for files which have completed the full normalization process.
-    Returns:
-       A list of final file names
-    '''
-
-    #test_name_list =
-    #test_normdir =
-    #test_final_dir =
-    #final_list = create_norm_spec(name_list, normdir, final_dir)
-
-    # is min smaller than max
-    assert 1 < 2
-
-
 def test_read_spec():
 
     # ascii format
@@ -149,6 +127,39 @@ def test_generate_realizations():
     #assert round(np.median(div_spec_1_by_1), 1) == 1.0
 
     ## ## noise injection level not well tested yet
+
+def test_create_norm_spec():
+    '''
+    Create final normalized spectra, using the output from the bkgrnd routine (which
+    puts out wavelength, flux, and continuum flux, but not the actual normalized flux)
+
+    Arguments:
+        name_list: List of Realization file names (no path info)
+        normdir: bkgrnd ascii files
+        finaldir: The final directory for files which have completed the full normalization process.
+    Returns:
+       A list of final file names
+    '''
+
+    # create noise-churned realizations for each spectrum
+    test_input_name_list = [
+                            "test_bkgrnd_output_575020m05_noise_ver_000.smo",
+                            "test_bkgrnd_output_575020m05_noise_ver_001.smo",
+                            ]
+
+    #test_input_name_list = config_red["data_dirs"]["TEST_DIR_SRC"] + "test_input_file_list.list"
+    ## ## note TEST_BIN might be changed to TEST_DIR_REZNS_SPEC_NORM, if it can be changed across multiple functions
+    test_new_name_list = create_spec_realizations.create_norm_spec(
+                            name_list=test_input_name_list,
+                            normdir=config_red["data_dirs"]["TEST_DIR_REZNS_SPEC"],
+                            finaldir=config_red["data_dirs"]["TEST_DIR_REZNS_SPEC_NORM"])
+    #test_name_list =
+    #test_normdir =
+    #test_final_dir =
+    #final_list = create_norm_spec(name_list, normdir, final_dir)
+
+    # is min smaller than max
+    assert 1<2 #len(test_new_name_list) < 1
 
 
 def test_read_list():

@@ -113,31 +113,26 @@ def test_generate_net_balmer():
 
     # generate the fake data: H_del =
 
-    params_data, params_1to1, data_net_balmer_test = scrape_ew_and_errew.generate_net_balmer(
+    params_data, data_net_balmer_test = scrape_ew_and_errew.generate_net_balmer(
                                                     read_in_filename = config_red["data_dirs"]["TEST_DIR_BIN"]+"scraper_output/test_stacked_data_pre_net_balmer_calc.csv",
                                                     write_out_filename = config_red["data_dirs"]["TEST_DIR_BIN"]+"scraper_output/test_stacked_data_post_net_balmer_calc.csv")
 
-    # extract parameters of the fit to the data
-    m_test = params_data[0]
-    err_m_test = params_data[1]
-    b_test = params_data[2]
-    err_b_test = params_data[3]
+    # is the Balmer line a true element wise average?
+    print("-----")
+    print(data_net_balmer_test["EW_Hgamma"])
+    print(data_net_balmer_test["EW_Hdelta"])
+    print(data_net_balmer_test["EW_Balmer"])
 
-    # extract parameters of the fit to the rescaled lines
-    m_test_1to1 = params_1to1[0]
-    err_m_test_1to1 = params_1to1[1]
-    b_test_1to1 = params_1to1[2]
-    err_b_test_1to1 = params_1to1[3]
+    print(type(np.mean([data_net_balmer_test["EW_Hgamma"],data_net_balmer_test["EW_Hdelta"]], axis=0)))
+    print(np.array(data_net_balmer_test["EW_Balmer"]))
+    print(np.testing.assert_allclose(np.array(data_net_balmer_test["EW_Balmer"]),np.mean([data_net_balmer_test["EW_Hgamma"],data_net_balmer_test["EW_Hdelta"]], axis=0)))
 
-    # was the best-fit line fit correctly?
-    assert round(m_test, 3) == 4.100
-    assert round(b_test, 3) == 3.700
-    # is the best fit to Hdelta and the rescaled Hgamma really a 1-to-1 line?
-    assert round(m_test_1to1, 3) == 1.000
-    assert round(b_test_1to1, 3) == 0.000
+    #assert np.array(data_net_balmer_test["EW_Balmer"]) == np.mean([data_net_balmer_test["EW_Hgamma"],data_net_balmer_test["EW_Hdelta"]], axis=0)
+    '''
     # check data type of newly-added data
     assert isinstance(data_net_balmer_test["EW_Balmer"].iloc[0],np.float64)
     assert isinstance(data_net_balmer_test["err_EW_Balmer_based_Robo"].iloc[0],np.float64)
+    '''
 
 
 def test_generate_addl_ew_errors():
