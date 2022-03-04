@@ -35,6 +35,41 @@ def test_make_dirs():
         assert os.path.exists(abs_path_name)
 '''
 
+#def test_create_spec_realizations_main():
+    ## ## CONTINUE HERE
+
+
+
+def test_calc_noise():
+
+    array_fake_file = np.random.random(10000)
+    df_fake_file = pd.DataFrame(array_fake_file, columns=["error"])
+    df_fake_file["flux"] = 2.
+
+    noise_to_add_file = create_spec_realizations.calc_noise(noise_level = "file",
+                                                            spectrum_df=df_fake_file)
+
+    noise_to_add_none = create_spec_realizations.calc_noise(noise_level = "None",
+                                                            spectrum_df=df_fake_file)
+
+    noise_level_choice = 0.05
+    noise_to_add_gauss = create_spec_realizations.calc_noise(noise_level = noise_level_choice,
+                                                            spectrum_df=df_fake_file)
+
+
+    # if we divide the error spectrum column back out, is the noise normally
+    # distributed with stdev of 1.?
+    spec_flux_file_divded = np.divide(noise_to_add_file,df_fake_file["error"])
+    assert np.round(np.std(spec_flux_file_divded),1) == 1.00
+
+    # is no noise really zero
+    assert noise_to_add_none == 0
+
+    # is Gaussian noise normalized if we divide out flux level and normalization constant?
+    spec_flux_gauss_divded = np.divide(noise_to_add_gauss,noise_level_choice*df_fake_file["flux"])
+    assert np.round(np.std(spec_flux_gauss_divded),1) == 1.00
+
+
 def test_read_spec():
 
     # ascii format
@@ -158,25 +193,6 @@ def test_create_norm_spec():
 
     # new file name list should have full path and same basename
     assert [i.split("/")[-1] for i in test_new_name_list] == test_input_name_list
-
-    # a non-existent file
-    test_nonexistent_list = ["test_bkgrnd_output_575020m05_noise_ver_000_nonexistent.smo"]
-    test_new_name_list = create_spec_realizations.create_norm_spec(
-                                name_list=test_nonexistent_list,
-                                normdir=config_red["data_dirs"]["TEST_DIR_REZNS_SPEC"],
-                                finaldir=config_red["data_dirs"]["TEST_DIR_REZNS_SPEC_NORM"])
-
-'''
-def test_fails():
-    with pytest.raises(Exception) as e_info:
-        x = 1 / 1
-'''
-'''
-def test_1_cannot_add_int_and_str(self):
-    with self.assertRaises(TypeError):
-        1 + '1'
-'''
-#pytest.raises(Exception)
 
 
 def test_read_list():

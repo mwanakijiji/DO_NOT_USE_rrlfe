@@ -97,7 +97,7 @@ def calc_noise(noise_level, spectrum_df):
     if (noise_level == "file"):
         # add Gaussian error to the empirical flux, taking sigma to be the
         # 'error' column in an input file; note this is an ABSOLUTE error
-        noise_to_add = np.random.standard_normal(len(spectrum_df))*spectrum_df['error']
+        noise_to_add = np.random.standard_normal(len(spectrum_df))*spectrum_df["error"]
         logging.info("Injecting Gaussian noise based on error column in file.")
     elif (noise_level == "None"):
         # don't inject noise at all (note this doesn't make sense if multiple spectra are being realized)
@@ -278,7 +278,7 @@ def read_spec(spec_name, format):
                           names=['wavelength', 'flux', 'error'])
             hdr = np.nan
 
-        except IOError:
+        except IOError:    # pragma: no cover
             # this error should be redundant, since upstream the input file list
             # should be checked with what is in the input directory
             logging.info("File {} not found!".format(spec_name))
@@ -312,7 +312,7 @@ def write_bckgrnd_input(name_list, indir, normdir):
         os.remove(bckgrnd_input)
     try:
         outfile = open(bckgrnd_input, 'w')
-    except IOError:
+    except IOError:   # pragma: no cover
             logging.info("File {} could not be opened!".format(bckgrnd_input))
 
 
@@ -485,3 +485,5 @@ def create_spec_realizations_main(noise_level,
     logging.info("-------------------------------------------")
     logging.info("Wrote final normalized spectra to directory")
     logging.info(final_dir)
+
+    return final_list
