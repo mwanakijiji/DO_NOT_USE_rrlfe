@@ -24,6 +24,28 @@ config_red.read(os.path.join(os.path.dirname(__file__), '../conf', 'config_red.i
 
 
 def test_Scraper():
+    ## ## CONTINUE HERE
+
+
+def test_line_order_check():
+
+    dummy_lines = [3933.660,3970.075,4101.7100,4340.472,4861.290]
+    test_num_glitches_0 = scrape_ew_and_errew.line_order_check(dummy_lines)
+    dummy_lines[1] = 3990.
+    dummy_lines[3] = 4320.
+    test_num_glitches_1 = scrape_ew_and_errew.line_order_check(dummy_lines)
+    dummy_lines[0] = 3913.
+    dummy_lines[2] = 4121.
+    dummy_lines[4] = 4881.
+    test_num_glitches_2 = scrape_ew_and_errew.line_order_check(dummy_lines)
+
+    # assert glitches is boolean
+    assert test_num_glitches_0 == 0
+    assert test_num_glitches_1 == 1
+    assert test_num_glitches_2 == 1
+
+
+def test_Scraper():
 
     '''
     write_dir_test = config_red["data_dirs"]["TEST_DIR_BIN"]

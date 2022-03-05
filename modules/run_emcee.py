@@ -312,11 +312,14 @@ def chi_sqd_fcn(Bal_pass,
 def write_soln_to_fits(model,
                         mcmc_text_output_file_name = config_red["data_dirs"]["DIR_BIN"] + config_red["file_names"]["MCMC_OUTPUT"],
                         teff_data_retrieve_file_name = config_red["data_dirs"]["DIR_BIN"] + config_red["file_names"]["TREND_TEFF_VS_BALMER"],
-                        soln_write_name = config_red["data_dirs"]["DIR_BIN"] + config_red["file_names"]["CALIB_SOLN"]):
+                        soln_write_name = config_red["data_dirs"]["DIR_BIN"] + config_red["file_names"]["CALIB_SOLN"],
+                        test_flag=False):
     '''
     Takes the full reduction solution and writes it to a FITS file with
     1) The MCMC posteriors in tabular form
     2) Meta-data in FITS header
+
+    test_flag: if True, then terminal prompts are suppressed to enable continuous integration
     '''
 
     # initialize FITS header and append keys
@@ -376,13 +379,14 @@ def write_soln_to_fits(model,
 
 
     # write out
-    if os.path.exists(soln_write_name):
+    if not test_flag: # pragma: no cover
+        if os.path.exists(soln_write_name):
 
-        input("A calibration solution file already exists! \nDo " +\
-                "what you want with that file and hit [ENTER] (will overwrite)")
+            input("A calibration solution file already exists! \nDo " +\
+                    "what you want with that file and hit [ENTER] (will overwrite)")
 
-    table_hdu.writeto(soln_write_name, overwrite=True)
-    logging.info("Full calibration MCMC posterior written to " + soln_write_name)
+        table_hdu.writeto(soln_write_name, overwrite=True)
+        logging.info("Full calibration MCMC posterior written to " + soln_write_name)
 
     # return FITS table for testing
     return table_hdu

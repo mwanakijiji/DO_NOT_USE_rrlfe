@@ -15,6 +15,40 @@ import matplotlib.pyplot as plt
 import matplotlib.pylab as pl
 from . import *
 
+def line_order_check(line_centers):
+    '''
+    Sanity check: are the lines listed in order?
+    N.b. This checks the wavelengths using the given line list
+    values (and not the fitted centers)
+    '''
+
+    logging.info('Verifying line centers...')
+    logging.info(line_centers[0])
+    glitch_count = int(0) # boolean for bookeeping
+    if ((line_centers[0] < 3933.660-10) or
+        (line_centers[0] > 3933.660+10)): # CaIIK
+        logging.warning('CaIIK line center does not match!')
+        glitch_count = int(1) # boolean for bookeeping
+    if ((line_centers[1] < 3970.075-10) or
+          (line_centers[1] > 3970.075+10)): # H-epsilon (close to CaIIH)
+        logging.warning('H-epsilon center (close to CaIIH) line does not match!')
+        glitch_count = int(1) # boolean for bookeeping
+    if ((line_centers[2] < 4101.7100-10) or
+          (line_centers[2] > 4101.7100+10)): # H-delta
+        logging.warning('H-delta line center does not match!')
+        glitch_count = int(1) # boolean for bookeeping
+    if ((line_centers[3] < 4340.472-10) or
+          (line_centers[3] > 4340.472+10)): # H-gamma
+        logging.warning('H-gamma line center does not match!')
+        glitch_count = int(1) # boolean for bookeeping
+    if ((line_centers[4] < 4861.290-10) or
+          (line_centers[4] > 4861.290+10)): # H-beta
+        logging.warning('H-beta line center does not match!')
+        glitch_count = 1 # boolean for bookeeping
+    if (glitch_count == int(0)):
+        logging.info('CaIIK, H-eps, H-del, H-gam, h_beta line centers are consistent')
+    return glitch_count
+
 class Scraper():
     '''
     Scrape all the equivalent width info from the Robospect *robolines files
@@ -56,40 +90,6 @@ class Scraper():
         self.verbose = verbose
 
     def __call__(self):
-
-        def line_order_check(line_centers):
-            '''
-            Sanity check: are the lines listed in order?
-            N.b. This checks the wavelengths using the given line list
-            values (and not the fitted centers)
-            '''
-
-            logging.info('Verifying line centers...')
-            logging.info(line_centers[0])
-            glitch_count = int(0) # boolean for bookeeping
-            if ((line_centers[0] < 3933.660-10) or
-                (line_centers[0] > 3933.660+10)): # CaIIK
-                logging.warning('CaIIK line center does not match!')
-                glitch_count = int(1) # boolean for bookeeping
-            if ((line_centers[1] < 3970.075-10) or
-                  (line_centers[1] > 3970.075+10)): # H-epsilon (close to CaIIH)
-                logging.warning('H-epsilon center (close to CaIIH) line does not match!')
-                glitch_count = int(1) # boolean for bookeeping
-            if ((line_centers[2] < 4101.7100-10) or
-                  (line_centers[2] > 4101.7100+10)): # H-delta
-                logging.warning('H-delta line center does not match!')
-                glitch_count = int(1) # boolean for bookeeping
-            if ((line_centers[3] < 4340.472-10) or
-                  (line_centers[3] > 4340.472+10)): # H-gamma
-                logging.warning('H-gamma line center does not match!')
-                glitch_count = int(1) # boolean for bookeeping
-            if ((line_centers[4] < 4861.290-10) or
-                  (line_centers[4] > 4861.290+10)): # H-beta
-                logging.warning('H-beta line center does not match!')
-                glitch_count = 1 # boolean for bookeeping
-            if (glitch_count == int(0)):
-                logging.info('CaIIK, H-eps, H-del, H-gam, h_beta line centers are consistent')
-            return
 
         df_master = pd.DataFrame() # initialize
 
@@ -145,7 +145,7 @@ class Scraper():
 
             # check lines are in the right order
             # if they are not, a warning is printed in the log
-            line_order_check(df['wavel_found_center'])
+            glitches_num = line_order_check(df['wavel_found_center'])
 
             # add two cols on the left: the filename, and the name of the line
             #s_length = len(df['mean']) # number of lines (should be 5)
@@ -181,7 +181,8 @@ class Scraper():
         logging.info("Table of ALL EW info written to " + str(self.write_out_filename))
         #if self.verbose:
         #    return df_master_reset, df_master_reset_drop_bad_spectra
-        return
+        # return for checking
+        return df_master
 
 
 def add_synthetic_meta_data(input_list = config_red["data_dirs"]["DIR_SRC"] + config_red["file_names"]["LIST_SPEC_PHASE"],

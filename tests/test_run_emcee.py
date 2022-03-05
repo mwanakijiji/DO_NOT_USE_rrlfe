@@ -6,6 +6,7 @@ from configparser import ConfigParser, ExtendedInterpolation
 import pandas as pd
 import astropy
 from scipy.optimize import least_squares
+from astropy.io import fits
 
 current_dir = os.path.dirname(__file__)
 target_dir = os.path.abspath(os.path.join(current_dir, "../"))
@@ -32,6 +33,31 @@ Caiik_test = 1.3
 err_Bal_test = 0.33
 err_Feh_test = 0.11
 err_Caiik_ew_test = 0.27
+
+
+def test_write_soln_to_fits():
+
+    test_abcd = run_emcee.write_soln_to_fits(model="abcd",
+                                            mcmc_text_output_file_name = config_red["data_dirs"]["TEST_DIR_SRC"] + config_red["file_names"]["TEST_MCMC_OUTPUT_ABCD"],
+                                            teff_data_retrieve_file_name = config_red["data_dirs"]["TEST_DIR_SRC"] + config_red["file_names"]["TEST_READIN_TREND_TEFF_VS_BALMER"],
+                                            soln_write_name = config_red["data_dirs"]["TEST_DIR_BIN"] + config_red["file_names"]["CALIB_SOLN"],
+                                            test_flag=True)
+
+    test_abcdfghk = run_emcee.write_soln_to_fits(model="abcdfghk",
+                                                mcmc_text_output_file_name = config_red["data_dirs"]["TEST_DIR_SRC"] + config_red["file_names"]["TEST_MCMC_OUTPUT_ABCDFGHK"],
+                                                teff_data_retrieve_file_name = config_red["data_dirs"]["TEST_DIR_SRC"] + config_red["file_names"]["TEST_READIN_TREND_TEFF_VS_BALMER"],
+                                                soln_write_name = config_red["data_dirs"]["TEST_DIR_BIN"] + config_red["file_names"]["CALIB_SOLN"],
+                                                test_flag=True)
+
+    # assert correct type and expected cols exist
+    assert isinstance(test_abcd,fits.hdu.table.BinTableHDU)
+    assert test_abcd.columns["a"]
+    assert test_abcd.columns["d"]
+
+    assert isinstance(test_abcdfghk,fits.hdu.table.BinTableHDU)
+    assert test_abcdfghk.columns["a"]
+    assert test_abcdfghk.columns["k"]
+
 
 def test_corner_plot():
 

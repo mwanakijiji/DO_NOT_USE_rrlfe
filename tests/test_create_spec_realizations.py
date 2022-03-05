@@ -38,6 +38,7 @@ def test_make_dirs():
 def test_create_spec_realizations_main():
     ## ## CONTINUE HERE
 
+    assert 1<2
 
 
 def test_calc_noise():
