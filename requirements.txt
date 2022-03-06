@@ -5,8 +5,6 @@ cycler==0.10.0
 emcee==2.2.1
 Flask==1.1.2
 GitPython==3.1.18
-ipdb==0.10.1
-ipython==8.1.1
 matplotlib==3.3.4
 pandas==0.24.2
 pyfits==3.5
