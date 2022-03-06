@@ -49,6 +49,7 @@ def line_order_check(line_centers):
         logging.info('CaIIK, H-eps, H-del, H-gam, h_beta line centers are consistent')
     return glitch_count
 
+
 class Scraper():
     '''
     Scrape all the equivalent width info from the Robospect *robolines files
@@ -212,7 +213,8 @@ def add_synthetic_meta_data(input_list = config_red["data_dirs"]["DIR_SRC"] + co
     combined_data.to_csv(write_out_filename,index=False)
     logging.info("Table of EW info with meta-data written to " + str(write_out_filename))
 
-    return
+    # return for testing
+    return combined_data
 
 
 def quality_check(

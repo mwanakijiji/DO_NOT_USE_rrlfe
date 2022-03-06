@@ -16,13 +16,13 @@ from typing import *
 
 
 
-input_file_name = "bic_run_20220129/results_20220129.csv"
+input_file_name = "bic_run_20220129_3_weighted_squares/results_bic_run_20220129_3_weighted_squares.csv"
 output_plot_name = "junk.pdf"
 
 df = pd.read_csv(input_file_name,names=["coeffs_array",
                                                     "bic",
                                                     "n_params",
-                                                    "ssr",
+                                                    "chi_squared",
                                                     "n_samples",
                                                     "a_coeff",
                                                     "b_coeff",
@@ -63,7 +63,7 @@ ax.set_ylabel("permutation, sorted by $\Delta$BIC")
 ax.set_xlabel("BIC")
 ax.set_yticklabels(list(zip(df_sorted["coeffs_array"],df_sorted["res"])), fontsize=3)
 #ax.get_yaxis().set_visible(False)
-
+ax.set_xlim([-200,600])
 
 #for p in ax.patches:
 #    ax.annotate(str(df_sorted["coeffs_array"][p]), (p.get_x() * 1.0, p.get_height() * 1.005))

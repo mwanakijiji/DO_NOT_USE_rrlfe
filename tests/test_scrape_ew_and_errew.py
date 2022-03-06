@@ -23,10 +23,6 @@ config_red = ConfigParser(interpolation=ExtendedInterpolation()) # for parsing v
 config_red.read(os.path.join(os.path.dirname(__file__), '../conf', 'config_red.ini'))
 
 
-def test_Scraper():
-    ## ## CONTINUE HERE
-
-
 def test_line_order_check():
 
     dummy_lines = [3933.660,3970.075,4101.7100,4340.472,4861.290]
@@ -54,7 +50,7 @@ def test_Scraper():
     '''
 
     # instantiate
-    scraper_instance = scrape_ew_and_errew.Scraper(subdir = config_red["data_dirs"]["TEST_DIR_SRC"],
+    scraper_instance = scrape_ew_and_errew.Scraper(subdir = config_red["data_dirs"]["TEST_DIR_ROBO_OUTPUT"],
                                                    file_scraped_info = config_red["data_dirs"]["TEST_DIR_BIN"]+"scraper_output/"+config_red["file_names"]["SCRAPED_EW_ALL_DATA"])
 
 
@@ -62,12 +58,25 @@ def test_Scraper():
     # note the writing of files is not directly tested here
     function_state = True
     try:
-        scraper_instance()
+        test = scraper_instance()
     except Exception as e:
         # e contains printable attributes of exception object
         function_state = False
 
+    # assert that instantiation worked
     assert function_state
+
+    # make sure lines are really being identified correctly
+    assert np.allclose(test.where(test["line_name"]=="CaIIK").dropna()["wavel_found_center"],3933.660, atol=2.)
+    assert np.allclose(test.where(test["line_name"]=="Heps").dropna()["wavel_found_center"],3970.075, atol=2.)
+    assert np.allclose(test.where(test["line_name"]=="Hdel").dropna()["wavel_found_center"],4101.710, atol=2.)
+    assert np.allclose(test.where(test["line_name"]=="Hgam").dropna()["wavel_found_center"],4340.472, atol=2.)
+    assert np.allclose(test.where(test["line_name"]=="Hbet").dropna()["wavel_found_center"],4861.290, atol=2.)
+
+    # only 2 of the 3 spectra should have been scraped, because one should have
+    # triggered a parsing errors
+    assert len(test.where(test["line_name"]=="CaIIK").dropna()) == 2
+
 
 
 def test_quality_check():
@@ -179,8 +188,14 @@ def test_generate_addl_ew_errors():
 
 
 def test_add_synthetic_meta_data():
-    # placeholder for now, until more decisions about how to calculate EW errors
 
-    #dummy = scrape_ew_and_errew.generate_addl_ew_errors()
+    combined_data = scrape_ew_and_errew.add_synthetic_meta_data(input_list = config_red["data_dirs"]["TEST_DIR_SRC"] + config_red["file_names"]["TEST_LIST_SPEC_PHASE"],
+                                                read_in_filename = config_red["data_dirs"]["TEST_DIR_EW_PRODS"]+config_red["file_names"]["TEST_RESTACKED_EW_DATA_W_NET_BALMER_ERRORS"],
+                                                write_out_filename = config_red["data_dirs"]["TEST_DIR_EW_PRODS"]+config_red["file_names"]["TEST_RESTACKED_EW_DATA_W_METADATA_WRITEOUT"])
 
-    assert 1<2
+    # columns from Robospect output and meta-data are all there
+    assert "wavel_stated_center" in combined_data.columns
+    assert "feh" in combined_data.columns
+    assert "teff" in combined_data.columns
+    # there are no nans in the table
+    assert np.sum(combined_data.isnull().sum()) == 0

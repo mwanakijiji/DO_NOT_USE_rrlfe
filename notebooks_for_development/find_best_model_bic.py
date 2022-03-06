@@ -144,11 +144,11 @@ class job:
             print("bounds array:")
             print(bounds_array)
 
-            # the error function
-            errfunc_coeffs = lambda p, H, F, K, err_K: (K - self.expanded_layden_all_coeffs(p, H, F)) / err_K
+            # the array of residuals, for least_squares calculation
+            residuals_array = lambda p, H, F, K, err_K: np.divide((K - self.expanded_layden_all_coeffs(p, H, F)),err_K)
 
             # the least-squares fit
-            out = optimize.least_squares(errfunc_coeffs, pinit, bounds=bounds_array,
+            out = optimize.least_squares(residuals_array, pinit, bounds=bounds_array,
                            args=(df_choice["EW_Balmer"], df_choice["feh"],
                                  df_choice["EW_CaIIK"], df_choice["err_EW_CaIIK_from_robo"]))
 
@@ -163,12 +163,17 @@ class job:
             # retrieved K values, using best-fit params
             retrieved_K = self.expanded_layden_all_coeffs(pfinal, df_choice["EW_Balmer"], df_choice["feh"])
             # 'sum of squared residuals between model and data'
-            ssr = np.sum(np.power(np.subtract(df_choice["EW_CaIIK"],retrieved_K),2.))
+            #ssr = np.sum(np.power(np.subtract(df_choice["EW_CaIIK"],retrieved_K),2.))
+            # chi-squared: (sum of squared residuals / error)^2
+            chi_squared = np.sum(np.power(np.divide(np.subtract(df_choice["EW_CaIIK"],retrieved_K),df_choice["err_EW_CaIIK_from_robo"]),2.))
+
             # number of parameters that were actually varying
             n_params = len(np.where(np.abs(pfinal) > 1e-15)[0]) # [a,b,c,d] + ...
             # number of datapoints
             n_samples = len(df_choice["EW_Balmer"])
-            bic = astropy.stats.bayesian_info_criterion_lsq(ssr, n_params, n_samples)
+            #bic = astropy.stats.bayesian_info_criterion_lsq(ssr, n_params, n_samples)
+            # BIC = chi_sqd + kln(N)
+            bic = chi_squared + n_params*np.log(n_samples)
             print("----------")
             print("n_params:")
             print(n_params)
@@ -191,7 +196,7 @@ class job:
             file_object.write(str(new_coeffs_array[t])+";"+
                             str(bic)+";"+
                             str(n_params)+";"+
-                            str(ssr)+";"+
+                            str(chi_squared)+";"+
                             str(n_samples)+";"+
                             str(pfinal[0])+";"+
                             str(pfinal[1])+";"+

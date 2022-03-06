@@ -22,7 +22,7 @@ import seaborn as sns
 from astropy import stats
 from scipy import optimize
 import matplotlib
-matplotlib.use('Agg') # necessary in the cloud
+# matplotlib.use('Agg') # necessary in the cloud
 import matplotlib.pyplot as plt
 
 # set the coefficients of the model
@@ -94,7 +94,7 @@ g = sns.relplot(
 balmer_dummy = np.arange(7,16,1)
 contour_4_points = np.add(8.,expanded_layden_all_coeffs(coeff_array=coeff_array, H=balmer_dummy, F=0.2))
 bool_p02 = (df_choice["feh"] == 0.2)
-#import ipdb; ipdb.set_trace()
+import ipdb; ipdb.set_trace()
 plt.errorbar(balmer_dummy[0],[20],
                 xerr=np.median(df_choice["err_EW_Balmer_based_Robo"][bool_p02]),
                 yerr=np.median(df_choice["err_EW_CaIIK_from_robo"][bool_p02]), ecolor="k") # [Fe/H] = +0.2

@@ -21,7 +21,7 @@ def main():
 
     # Make all the directories
     make_dirs(objective = objective_choice)
-    '''
+
     # Compile the C spectral normalization script
     compile_normalization.compile_bkgrnd()
 
@@ -72,8 +72,9 @@ def main():
 
     data_errors = scrape_ew_and_errew.generate_addl_ew_errors(
         read_in_filename = config_apply["data_dirs"]["DIR_EW_PRODS"]+config_apply["file_names"]["RESTACKED_EW_DATA_W_NET_BALMER"],
-        write_out_filename = config_apply["data_dirs"]["DIR_EW_PRODS"]+config_apply["file_names"]["RESTACKED_EW_DATA_W_NET_BALMER_ERRORS"])
-    '''
+        write_out_filename = config_apply["data_dirs"]["DIR_EW_PRODS"]+config_apply["file_names"]["RESTACKED_EW_DATA_W_NET_BALMER_ERRORS"],
+        groupby_parent = False)
+
     # find Fe/H values, sampling from the a, b, c, d posteriors and while
     # incorporating equivalent width errors
     find_feh_instance = find_feh.findFeH()
