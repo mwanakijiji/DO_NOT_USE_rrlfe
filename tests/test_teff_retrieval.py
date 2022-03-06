@@ -37,8 +37,8 @@ def test_temp_vs_balmer(test_df_poststack_file_name_read = config_red["data_dirs
                                             df_poststack_file_name_write = test_df_poststack_file_name_write,
                                             teff_data_write = test_teff_data_write,
                                             plot_write = "dummy.png",
-                                            testing = True,
-                                            plot=False)
+                                            plot=False,
+                                            test_flag=True)
 
     # check that returned filetype is a pandas dataframe, and that new column 'teff_bestfit' exists
     assert isinstance(df_test, pd.DataFrame)
