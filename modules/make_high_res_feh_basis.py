@@ -108,10 +108,12 @@ def main():
 
     # get common ASAS names from Simbad, put them in new col
     # (note that will have to remove '_' in many strings)
+    '''
     .values_equal()
 
     # make common basis
     sdiff = astropy.table.join(table_1, table_2, keys=["ASAS_common"], join_type="inner")
+    '''
 
 
 # entry point
