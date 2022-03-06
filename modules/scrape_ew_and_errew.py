@@ -10,8 +10,8 @@ import pandas as pd
 import numpy as np
 import matplotlib
 from astropy.io.fits import getdata
-import matplotlib # kernel needs to be restarted to avoid TkAgg error
-matplotlib.use('TkAgg')
+#import matplotlib # kernel needs to be restarted to avoid TkAgg error
+#matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import matplotlib.pylab as pl
 from . import *
