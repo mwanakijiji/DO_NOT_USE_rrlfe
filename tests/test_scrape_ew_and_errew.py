@@ -186,6 +186,17 @@ def test_generate_addl_ew_errors():
     assert round(array_2[0], 3) == 0.020
     assert round(array_3[0], 3) == 0.048
 
+    # in unusual case where collapsing the noise-churned spectra is not desired
+    test_df_postbalmer_errors_nogrouping = scrape_ew_and_errew.generate_addl_ew_errors(read_in_filename=config_red["data_dirs"]["TEST_DIR_SRC"]+config_red["file_names"]["TEST_RESTACKED_EW_DATA_W_NET_BALMER"],
+                                                        write_out_filename=config_red["data_dirs"]["TEST_DIR_BIN"]+config_red["file_names"]["TEST_RESTACKED_EW_DATA_W_NET_BALMER_ERRORS"],
+                                                        groupby_parent = False)
+
+    array_1_children = test_df_postbalmer_errors_nogrouping.where(test_df_postbalmer_errors["orig_spec_file_name"]=="575020m10.smo").dropna()
+
+    # there are 40 rows for each parent spectrum, and the Balmer EW values are different in each
+    assert len(array_1_children) == 20
+    assert np.std(array_1_children["EW_Balmer"]) > 0
+
 
 def test_add_synthetic_meta_data():
 

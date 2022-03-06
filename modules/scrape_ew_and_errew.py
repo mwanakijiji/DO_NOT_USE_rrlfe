@@ -290,51 +290,6 @@ def quality_check(
 
     return pruned_data
 
-def error_scatter_ew(df_pass):
-    '''
-    Adds a column of errors, as calculated using the method of taking the
-    scatter in measured EWs of different lines (as opposed to taking Robospec's
-    errors at face value)
-    '''
-
-    # get list of original file names with no repeats
-    orig_file_array = np.array((df_pass["orig_spec_file_name"].drop_duplicates()))
-
-    # add new columns of nans
-    df_pass["err_EW_Hbeta_from_EW_variation"] = np.nan
-    df_pass["err_EW_Hgamma_from_EW_variation"] = np.nan
-    df_pass["err_EW_Hdelta_from_EW_variation"] = np.nan
-    df_pass["err_EW_Heps_from_EW_variation"] = np.nan
-    df_pass["err_EW_CaIIK_from_EW_variation"] = np.nan
-
-    for orig_file_name_num in range(0,len(orig_file_array)):
-
-        # mask all rows that do not correspond to the original spectrum
-
-        this_orig_spec = orig_file_array[orig_file_name_num]
-        df_masked = df_pass.where(df_pass["orig_spec_file_name"] == this_orig_spec)
-
-        # find stdev of EWs, as measured for all realizations of those file names
-        '''
-        df_masked["err_EW_Hbeta_from_EW_variation"] = np.nanstd(df_masked["EW_Hbeta"])
-        df_masked["err_EW_Hgamma_from_EW_variation"] = np.nanstd(df_masked["EW_Hgamma"])
-        df_masked["err_EW_Hdelta_from_EW_variation"] = np.nanstd(df_masked["EW_Hdelta"])
-        df_masked["err_EW_Heps_from_EW_variation"] = np.nanstd(df_masked["EW_Heps"])
-        '''
-
-        # insert into columns of input table
-        try:
-            idx = df_pass.index[df_pass["orig_spec_file_name"] == this_orig_spec] # indices
-            df_pass.loc[idx, "err_EW_Hbeta_from_EW_variation"] = np.nanstd(df_masked["EW_Hbeta"])
-            df_pass.loc[idx, "err_EW_Hgamma_from_EW_variation"] = np.nanstd(df_masked["EW_Hgamma"])
-            df_pass.loc[idx, "err_EW_Hdelta_from_EW_variation"] = np.nanstd(df_masked["EW_Hdelta"])
-            df_pass.loc[idx, "err_EW_Heps_from_EW_variation"] = np.nanstd(df_masked["EW_Heps"])
-            df_pass.loc[idx, "err_EW_CaIIK_from_EW_variation"] = np.nanstd(df_masked["EW_CaIIK"])
-        except:
-            print("Anomaly in finding scatter in EW measurements in " + str(this_orig_spec))
-
-    return df_pass
-
 
 def generate_net_balmer(read_in_filename = config_red["data_dirs"]["DIR_EW_PRODS"]+config_red["file_names"]["RESTACKED_EW_DATA_GOOD_ONLY"],
                         write_out_filename = config_red["data_dirs"]["DIR_EW_PRODS"]+config_red["file_names"]["RESTACKED_EW_DATA_W_NET_BALMER"]):
