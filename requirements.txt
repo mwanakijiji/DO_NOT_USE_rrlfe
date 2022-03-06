@@ -1,13 +1,10 @@
-Flask
-Redis
-
 astropy==4.1
 astroquery==0.4.5
 corner==2.0.1
 cycler==0.10.0
 emcee==2.2.1
 Flask==1.1.2
-GitPython==3.1.27
+GitPython==3.1.18
 ipdb==0.10.1
 ipython==8.1.1
 matplotlib==3.3.4
